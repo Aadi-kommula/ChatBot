@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { FaUser, FaRobot, FaPaperPlane } from "react-icons/fa";
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 function App() {
   const [input, setInput] = useState("");
   const [chat, setChat] = useState([]);
   const [loading, setLoading] = useState(false);
-  const API_KEY = import.meta.env.VITE_API_KEY
+  const API_KEY = import.meta.env.VITE_API_KEY;
+  const chatContainerRef = useRef(null);
+
   const handleSend = async () => {
     if (!input.trim()) return;
 
@@ -22,17 +27,22 @@ function App() {
     setLoading(false);
   };
 
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chat]);
+
   return (
-    <div className="flex flex-col h-screen w-auto justify-center items-center bg-gray-200 ">
+    <div className="flex flex-col h-screen w-auto justify-center items-center bg-gray-200">
       <h1 className="text-2xl m-2">Simple ChatBot</h1>
       {/* Chat Container */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 ">
+      <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 w-96">
         {chat.map((msg, index) => (
           <div key={index} className="flex flex-col space-y-2">
-
             {/* User Message */}
-            <div className="flex justify-end items-center  space-x-2">
-              <div className="bg-cyan-600 text-white px-4 py-2 rounded-lg max-w-xs">
+            <div className="flex justify-end items-center space-x-2">
+              <div className="bg-cyan-600 text-white px-4 py-2 rounded-lg max-w-xs break-words">
                 {msg.userinput}
               </div>
               <FaUser className="text-cyan-600" />
@@ -41,8 +51,28 @@ function App() {
             {/* Chatbot Response */}
             <div className="flex justify-start items-center space-x-2">
               <FaRobot className="text-gray-500" />
-              <div className="bg-gray-300 px-4 py-2 rounded-lg max-w-xs">
-                {msg.chatbot}
+              <div className="bg-gray-300 px-4 py-2 rounded-lg max-w-xs break-words">
+                <ReactMarkdown
+                  children={msg.chatbot}
+                  components={{
+                    code({ node, inline, className, children, ...props }) {
+                      const match = /language-(\w+)/.exec(className || '');
+                      return !inline && match ? (
+                        <SyntaxHighlighter
+                          children={String(children).replace(/\n$/, '')}
+                          style={dark}
+                          language={match[1]}
+                          PreTag="div"
+                          {...props}
+                        />
+                      ) : (
+                        <code className={className} {...props}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -70,6 +100,7 @@ function App() {
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
         <button
+          title="Send"
           className="ml-3 bg-cyan-600 text-white p-2 rounded-lg"
           onClick={handleSend}
         >
