@@ -1,0 +1,18 @@
+.chatbotresponse::selection{
+    background-color: #0092b7d7;
+    color: #fff;
+}
+
+@media screen and (max-width:500px) {
+ 
+   .chatcontainer{
+    width: 95%;
+}
+.search{
+    width: 90%;
+}
+.chatbotresponse{
+    width: 100%;
+}
+
+}
