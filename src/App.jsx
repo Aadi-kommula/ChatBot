@@ -4,7 +4,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { FaUser, FaRobot, FaPaperPlane } from "react-icons/fa";
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 function App() {
   const [input, setInput] = useState("");
@@ -68,7 +67,6 @@ function App() {
                       return !inline && match ? (
                         <SyntaxHighlighter
                           children={String(children).replace(/\n$/, '')}
-                          className='bg-red-900'
                           language={match[1]}
                           PreTag="div"
                           {...props}
@@ -90,13 +88,14 @@ function App() {
         {loading && (
           <div className="flex justify-start items-center space-x-2">
             <FaRobot className="text-gray-500" />
-            <div className="bg-gray-300 px-4 py-2 rounded-lg max-w-xs">
-              Typing...
+            <div class="typing-indicator flex justify-center">
+              <span class="dot"></span>
             </div>
           </div>
         )}
       </div>
-      {/* Input Field */}
+
+      {/* Input Field  Search box */}
       <div className="bg-gray-300 search w-1/2 mb-5 p-4 flex items-center rounded-2xl">
         <input
           className="flex-1 px-4 py-2 border rounded-lg focus:outline-none"
@@ -106,6 +105,8 @@ function App() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
+
+        {/* Send button as icon  */}
         <button
           title="Send"
           className="ml-3 bg-cyan-600 text-white p-2 rounded-lg"

@@ -1,9 +1,32 @@
+/* Custom CSS for whole chatBot */
+
+/* while text selection color */
+
 .chatbotresponse::selection{
     background-color: #0092b7d7;
     color: #fff;
 }
 
-@media screen and (max-width:500px) {
+/* Animation for Bot generating */
+
+.typing-indicator span {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: gray;
+    border-radius: 50%;
+    margin: 0 3px;
+    animation: breath 1.5s infinite ease-in-out;
+  }
+  @keyframes breath {
+    0%, 100% { transform: scale(0.8); opacity: 0.3; }
+    50% { transform: scale(1.2); opacity: 1; }
+  }
+  .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+  .typing-indicator span:nth-child(2) { animation-delay: 0.3s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.6s; }
+
+@media screen and (max-width:650px) {
  
    .chatcontainer{
     width: 95%;
